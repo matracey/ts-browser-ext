@@ -25,6 +25,8 @@ export function createManifest(browser: string): UserManifest {
         gecko: {
           id: FIREFOX_EXTENSION_ID,
           strict_min_version: FIREFOX_MIN_VERSION,
+          // Traffic only flows to the user's own tailnet; nothing reaches the developer.
+          data_collection_permissions: { required: ["none"] },
         },
       },
     }),

@@ -23,7 +23,11 @@ describe("createManifest", () => {
     expect(manifest.permissions).toEqual(["proxy", "storage", "nativeMessaging"]);
     expect(manifest.host_permissions).toEqual(["<all_urls>"]);
     expect(manifest.browser_specific_settings).toEqual({
-      gecko: { id: FIREFOX_EXTENSION_ID, strict_min_version: FIREFOX_MIN_VERSION },
+      gecko: {
+        id: FIREFOX_EXTENSION_ID,
+        strict_min_version: FIREFOX_MIN_VERSION,
+        data_collection_permissions: { required: ["none"] },
+      },
     });
   });
 
