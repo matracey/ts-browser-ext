@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+project_name: ts-browser-ext
+
+builds:
+  - id: native-host
+    main: .
+    binary: ts-browser-ext
+    env:
+      - CGO_ENABLED=0
+    # --install only knows the NativeMessagingHosts paths on Linux and macOS.
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: ["-s -w"]
+
+archives:
+  - id: native-host
+    ids: [native-host]
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}-native-host_{{ .Os }}_{{ .Arch }}"
+    files: [LICENSE*, README.md]
+
+checksum:
+  name_template: "{{ .ProjectName }}-native-host_checksums.txt"
+
+changelog:
+  disable: true
+
+release:
+  # release-please creates the release and its notes; only add assets to it.
+  mode: keep-existing
