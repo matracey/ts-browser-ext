@@ -7,6 +7,7 @@ import { NativeSession, type PortLike } from "../background/native-session";
 import { PopupBridge } from "../background/popup-bridge";
 import { createChromiumProxyAdapter } from "../background/proxy/chromium";
 import { createFirefoxProxyAdapter } from "../background/proxy/firefox";
+import { iconPathMap } from "../shared/icons";
 import { isToggleProxyCommand } from "../shared/protocol";
 
 export default defineBackground(() => {
@@ -28,7 +29,7 @@ export default defineBackground(() => {
     randomUUID: () => crypto.randomUUID(),
     setIcon: (name) => {
       browser.action
-        .setIcon({ path: `/${name}.png` })
+        .setIcon({ path: iconPathMap(name, "/") })
         .catch((error: unknown) => console.error("setIcon failed", error));
     },
     setTimeout: (fn, ms) => setTimeout(fn, ms),

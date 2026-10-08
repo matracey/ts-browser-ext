@@ -27,6 +27,18 @@ describe("createManifest", () => {
     });
   });
 
+  it("uses the generated online icons for the extension and action", () => {
+    const manifest = createManifest("chrome");
+    const icons = {
+      16: "icons/online-16.png",
+      32: "icons/online-32.png",
+      48: "icons/online-48.png",
+      128: "icons/online-128.png",
+    };
+    expect(manifest.icons).toEqual(icons);
+    expect(manifest.action).toEqual({ default_icon: icons });
+  });
+
   it("treats Chromium-based browsers like Chrome", () => {
     expect(createManifest("edge").permissions).toContain("background");
   });

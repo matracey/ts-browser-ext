@@ -1,4 +1,5 @@
 import type { UserManifest } from "wxt";
+import { iconPathMap } from "./shared/icons";
 
 const SHARED_PERMISSIONS = ["proxy", "storage", "nativeMessaging"];
 
@@ -17,6 +18,8 @@ export function createManifest(browser: string): UserManifest {
       ? SHARED_PERMISSIONS
       : [...SHARED_PERMISSIONS, "background"],
     host_permissions: ["<all_urls>"],
+    icons: iconPathMap("online"),
+    action: { default_icon: iconPathMap("online") },
     ...(isFirefox && {
       browser_specific_settings: {
         gecko: {
