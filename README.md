@@ -50,27 +50,57 @@ point.
 
 To log out, for now you need to remove & re-add the extension.
 
+### Prerequisites
+
+- [Bun](https://bun.sh/) for the extension toolchain.
+- Go, at the version pinned in `go.mod`, for the native messaging host. With [mise](https://mise.jdx.dev/), prefix Go commands with `mise exec go@1.26.3 --`.
+
+### Building the extension
+
+The extension is built with [WXT](https://wxt.dev/) from a single TypeScript source tree in `src/`. Both browsers use Manifest V3.
+
+```powershell
+bun install
+bun run build           # Chrome, output in .output/chrome-mv3/
+bun run build:firefox   # Firefox, output in .output/firefox-mv3/
+```
+
+For development, `bun run dev` and `bun run dev:firefox` rebuild on save and launch a browser with the extension loaded.
+
+| Script | Purpose |
+| --- | --- |
+| `bun run typecheck` | Type check with `tsc --noEmit` |
+| `bun run test` | Run the Vitest unit tests |
+| `bun run test:coverage` | Run tests with the 80% coverage gate |
+| `bun run zip` / `bun run zip:firefox` | Package a build for distribution |
+
+> [!NOTE]
+>
+> Browser-specific code lives behind the proxy adapters in `src/background/proxy/`. The build selects the Chromium or Firefox adapter, so each bundle only contains its own implementation.
+
 ### Chrome
 
-1. Open the Extensions page (`chrome://extensions`) or Extensions... > Manage Extensions...
-2. Toggle "Developer mode" on.
-3. Click "Load unpacked".
-4. Navigate to the directory where you cloned this repo and select it.
-5. Pin the extension to the toolbar.
-6. Click the extension icon.
-7. Follow the instructions in the popup to run the printed `go run ...` command, which builds and registers the native messaging backend.
-8. Click the extension icon again and select "Log in".
+1. Run `bun run build`.
+2. Open the Extensions page (`chrome://extensions`) or Extensions... > Manage Extensions...
+3. Toggle "Developer mode" on.
+4. Click "Load unpacked".
+5. Select the `.output/chrome-mv3/` directory in your clone of this repo.
+6. Pin the extension to the toolbar.
+7. Click the extension icon.
+8. Follow the instructions in the popup to run the printed `go run ...` command, which builds and registers the native messaging backend. If Go comes from mise, run it as `mise exec go@1.26.3 -- go run ...`.
+9. Click the extension icon again and select "Log in".
 
 ### Firefox
 
-1. Open the Debugging page (`about:debugging#/runtime/this-firefox`).
-2. Click "Load Temporary Add-on...".
-3. Navigate to the `firefox/` subdirectory of this repo and select its `manifest.json`.
-4. Open the Add-ons Manager (`about:addons`), select the Tailscale extension, and under "Run in Private Windows" choose "Allow" if you want it to be active in private browsing.
-5. Pin the extension to the toolbar.
-6. Click the extension icon.
-7. Follow the instructions in the popup to run the printed `go run ...` command, which builds and registers the native messaging backend.
-8. Click the extension icon again and select "Log in".
+1. Run `bun run build:firefox`.
+2. Open the Debugging page (`about:debugging#/runtime/this-firefox`).
+3. Click "Load Temporary Add-on...".
+4. Select `.output/firefox-mv3/manifest.json` in your clone of this repo.
+5. Open the Add-ons Manager (`about:addons`), select the Tailscale extension, and under "Run in Private Windows" choose "Allow" if you want it to be active in private browsing.
+6. Pin the extension to the toolbar.
+7. Click the extension icon.
+8. Follow the instructions in the popup to run the printed `go run ...` command, which builds and registers the native messaging backend. If Go comes from mise, run it as `mise exec go@1.26.3 -- go run ...`.
+9. Click the extension icon again and select "Log in".
 
 Temporary add-ons in Firefox are removed when the browser restarts, so you'll need to reload it from `about:debugging` each session.
 
