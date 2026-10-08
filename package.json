@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Experimental Tailscale browser extension using tsnet and Native Messaging.",
   "type": "module",
+  "packageManager": "bun@1.4.2",
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox --mv3",
