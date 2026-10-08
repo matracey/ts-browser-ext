@@ -46,6 +46,51 @@ point.
 | Firefox  | Windows | Registry install work not yet done |
 | Safari  | * | not possible; no support for Native Messaging |
 
+## Installing from a release
+
+Each [GitHub release](https://github.com/matracey/ts-browser-ext/releases) has prebuilt assets, so you don't need Bun or Go installed.
+
+| Asset | What it is |
+| --- | --- |
+| `ts-browser-ext-<version>-chrome.zip` | Chrome extension |
+| `ts-browser-ext-<version>-firefox.zip` | Unsigned Firefox extension |
+| `*.xpi` | Signed Firefox extension, when AMO signing is configured |
+| `ts-browser-ext-native-host_<os>_<arch>.tar.gz` | Native messaging host for Linux or macOS on amd64 or arm64 |
+| `ts-browser-ext-native-host_checksums.txt` | SHA-256 checksums for the host archives |
+
+### Chrome
+
+1. Download and unzip `ts-browser-ext-<version>-chrome.zip` somewhere permanent. Chrome loads it from that folder, so don't delete it.
+2. Open `chrome://extensions`, turn on "Developer mode", click "Load unpacked", and select the unzipped folder.
+3. Click the extension icon. The popup shows an `--install=C<extension-id>` argument.
+4. Download the native host archive for your platform, extract it, and register it with that argument:
+
+   ```shell
+   tar -xzf ts-browser-ext-native-host_darwin_arm64.tar.gz
+   ./ts-browser-ext --install=C<extension-id>
+   ```
+
+5. Click the extension icon again and select "Log in".
+
+### Firefox
+
+1. Open the signed `.xpi` from the release in Firefox and accept the install prompt. Unlike a temporary add-on, it survives restarts.
+2. Download and extract the native host archive for your platform, then register it:
+
+   ```shell
+   ./ts-browser-ext --install=Fbrowser-ext@tailscale.com
+   ```
+
+3. Click the extension icon and select "Log in".
+
+> [!NOTE]
+>
+> The `--install` step copies the binary into your browser's native messaging directory, so you can delete the extracted archive afterwards. Windows isn't supported yet.
+
+### How releases are made
+
+[release-please](https://github.com/googleapis/release-please) keeps a release PR open that bumps `package.json` from the Conventional Commits on `main`. Merging that PR tags `vX.Y.Z` and creates the release, then the release workflow builds and attaches the extension zips, signs the Firefox `.xpi` when the `AMO_JWT_ISSUER` and `AMO_JWT_SECRET` secrets are set, and uses [GoReleaser](https://goreleaser.com/) to attach the native host archives.
+
 ## Developer instructions
 
 To log out, for now you need to remove & re-add the extension.
