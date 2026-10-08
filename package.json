@@ -17,6 +17,7 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@vitest/coverage-v8": "^5.0.3",
     "happy-dom": "^20.14.5",
     "typescript": "^7.0.2",
